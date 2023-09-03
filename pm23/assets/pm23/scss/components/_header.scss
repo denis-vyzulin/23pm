@@ -1,0 +1,25 @@
+.header {
+    background-color: var(--primary-color);
+
+    &__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    &__title {
+        display: flex;
+        align-items: baseline;
+        justify-content: flex-start;
+        color: white;
+        @include adaptive_font_size(32, 20);
+
+        span {
+            margin-left: 10px;
+            font-weight: 400;
+            @include adaptive_font_size(24, 14);
+        }
+    }
+}

@@ -1,0 +1,62 @@
+.lessons {
+    margin-top: 20px
+}
+
+.day {
+    margin-top: 10px;
+
+    &:not(:first-child) {
+        margin-top: 20px;
+    }
+
+    &__header {
+        padding: 10px;
+        width: 100%;
+        background-color: var(--primary-color);
+
+        p {
+            color: white;
+        }
+    }
+}
+
+.lesson {
+    display: block;
+    margin-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    &__type {
+        @include adaptive_font_size(15, 12);
+    }
+
+    &__name {
+        margin: 0;
+        @include adaptive_font_size(18, 14);
+    }
+
+    &__info {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        @include adaptive_font_size(17, 13);
+
+        &:not(:last-child) {
+            margin-bottom: 4px;
+        }
+    }
+
+    &__icon {
+        height: 20px;
+        width: 20px;
+        margin-right: 8px;
+
+        path {
+            stroke: var(--primary-color);
+        }
+    }
+
+    &__stuff {
+        @include adaptive_font_size(16, 12);
+    }
+}

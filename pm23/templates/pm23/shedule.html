@@ -1,0 +1,964 @@
+{% extends 'pm23/index.html' %}
+{% load static %}
+
+
+{% block title %}
+<title>
+    23-ПМ / Расписание
+</title>
+{% endblock %}
+
+{% block page_content %}
+<section class="filters _container">
+    <div class="filters__header" id="ft">
+        <p class="filters__title">
+            Список фильтров
+        </p>
+        <svg class="filters__icon" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.74414 21.1579V14.1579" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4.74414 10.1579V3.15794" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12.7441 21.1579V12.1579" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12.7441 8.15794V3.15794" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20.7441 21.1579V16.1579" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20.7441 12.1579V3.15794" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M1.74414 14.1579H7.74414" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9.74414 8.15794H15.7441" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17.7441 16.1579H23.7441" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>            
+    </div>
+    <div class="filters__item _hidden">
+        <div class="ft-group filters__groups">
+            <p class="ft-group__opt _active" onclick="find_lessons('23-ПМ-1')">23-ПМ-1</p>
+            /
+            <p class="ft-group__opt" onclick="find_lessons('23-ПМ-2')">23-ПМ-2</p>
+        </div>
+    </div>
+    <div class="filters__item _hidden">
+        <div class="ft-group filters__groups">
+            <p class="ft-group__opt _active" onclick="find_lessons('Подгруппа 1')">Подгруппа 1</p>
+            /
+            <p class="ft-group__opt" onclick="find_lessons('Подгруппа 2')">Подгруппа 2</p>
+        </div>
+    </div>
+    <div class="filters__item _hidden">
+        <div class="ft-group filters__groups">
+            <p class="ft-group__opt _active" onclick="find_lessons('Подгруппа 1, англ')">Подгруппа 1, англ</p>
+            /
+            <p class="ft-group__opt" onclick="find_lessons('Подгруппа 2, англ')">Подгруппа 2, англ</p>
+        </div>
+    </div>
+</section>
+<!-- / end of filters -->
+
+
+
+<section class="week _container">
+    <div class="week__inner">
+        <div class="week__left-arrow _hidden">
+            <svg class="week__icon" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 9L1 5L5 1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>            
+        </div>
+        <p class="week__name">
+            Текущая неделя
+        </p>
+        <p class="week__name _hidden">
+            Следующая неделя
+        </p>
+        <div class="week__right-arrow">
+            <svg class="week__icon" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 9L5 5L1 1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>            
+        </div>
+    </div>
+</section>
+<!-- / end of weeks -->
+
+<section class="add-info _container">
+    {% if curr_week_type == 0 %}
+    <p class="add-info__text">
+        Сейчас: Четная неделя,
+        <span class="add-info__curr-week">{{ curr_week }}</span>-я
+    </p>
+    {% else %}
+    <p class="add-info__text">
+        Сейчас: Нечетная неделя,
+        <span class="add-info__curr-week">{{ curr_week }}</span>-я
+    </p>
+    {% endif %}
+</section>
+
+
+
+<section class="lessons _odd _container">
+
+    <div class="day lessons__day">
+        <div class="day__header">
+            <p>{{ dates.0.0 | date:"d.m, l" }}</p>
+        </div>
+        <!-- / end of header -->
+        {% for lesson in 23pm_odd %}
+            {% if lesson.lesson_date == 'MON' and lesson.week_type == 'Odd' %}
+            <div class="lesson day__lesson">
+                <h4 class="lesson__name">
+                    {{ lesson.name }}
+                    {% if lesson.get_lesson_type_display != None %}
+                    / {{ lesson.get_lesson_type_display }}
+                    {% endif %}
+                </h4>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.99998 14.6667C11.6819 14.6667 14.6666 11.6819 14.6666 8C14.6666 4.3181 11.6819 1.33334 7.99998 1.33334C4.31808 1.33334 1.33331 4.3181 1.33331 8C1.33331 11.6819 4.31808 14.6667 7.99998 14.6667Z" stroke="#0C429A" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 4V8L10.6667 9.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ lesson.time_start }} – {{ lesson.time_end }}</span>
+                </p>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 6.66667C14 11.3333 8 15.3333 8 15.3333C8 15.3333 2 11.3333 2 6.66667C2 5.07537 2.63214 3.54925 3.75736 2.42403C4.88258 1.29881 6.4087 0.666668 8 0.666668C9.5913 0.666668 11.1174 1.29881 12.2426 2.42403C13.3679 3.54925 14 5.07537 14 6.66667Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 8.66666C9.10457 8.66666 10 7.77123 10 6.66666C10 5.56209 9.10457 4.66666 8 4.66666C6.89543 4.66666 6 5.56209 6 6.66666C6 7.77123 6.89543 8.66666 8 8.66666Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.place }}</span>
+                </p>
+                {% if lesson.teacher != None %}
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.3334 14V12.6667C13.3334 11.9594 13.0524 11.2811 12.5523 10.781C12.0522 10.281 11.3739 10 10.6667 10H5.33335C4.62611 10 3.94783 10.281 3.44774 10.781C2.94764 11.2811 2.66669 11.9594 2.66669 12.6667V14" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.99998 7.33333C9.47274 7.33333 10.6666 6.13943 10.6666 4.66667C10.6666 3.19391 9.47274 2 7.99998 2C6.52722 2 5.33331 3.19391 5.33331 4.66667C5.33331 6.13943 6.52722 7.33333 7.99998 7.33333Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.teacher }}</span>
+                </p>
+                {% endif %}
+                <p class="lesson__stuff">
+                    {% if lesson.get_group_display == '23-ПМ-1' or lesson.get_group_display == '23-ПМ-2' %}
+                    <span class="lesson__group">{{ lesson.get_group_display }}</span>
+                        {% if lesson.get_subgroup_display != None %}
+                        / <span class="lesson__subgroup">{{ lesson.get_subgroup_display }}</span>
+                        {% else %}
+                        <span class="lesson__subgroup"></span>
+                        {% endif %}
+                    {% else %}
+                    <span class="lesson__group">23-ПМ</span>
+                    <span class="lesson__subgroup"></span>
+                    {% endif %}
+                    
+                    {% if lesson.get_week_type_display != None %}
+                    / {{ lesson.get_week_type_display }} неделя
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <!-- / end of monday -->
+
+    <div class="day lessons__day">
+        <div class="day__header">
+            <p>{{ dates.0.1 | date:"d.m, l" }}</p>
+        </div>
+        <!-- / end of header -->
+        {% for lesson in 23pm_odd %}
+            {% if lesson.lesson_date == 'TUE' and lesson.week_type == 'Odd' %}
+            <div class="lesson day__lesson">
+                <h4 class="lesson__name">
+                    {{ lesson.name }}
+                    {% if lesson.get_lesson_type_display != None %}
+                    / {{ lesson.get_lesson_type_display }}
+                    {% endif %}
+                </h4>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.99998 14.6667C11.6819 14.6667 14.6666 11.6819 14.6666 8C14.6666 4.3181 11.6819 1.33334 7.99998 1.33334C4.31808 1.33334 1.33331 4.3181 1.33331 8C1.33331 11.6819 4.31808 14.6667 7.99998 14.6667Z" stroke="#0C429A" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 4V8L10.6667 9.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ lesson.time_start }} – {{ lesson.time_end }}</span>
+                </p>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 6.66667C14 11.3333 8 15.3333 8 15.3333C8 15.3333 2 11.3333 2 6.66667C2 5.07537 2.63214 3.54925 3.75736 2.42403C4.88258 1.29881 6.4087 0.666668 8 0.666668C9.5913 0.666668 11.1174 1.29881 12.2426 2.42403C13.3679 3.54925 14 5.07537 14 6.66667Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 8.66666C9.10457 8.66666 10 7.77123 10 6.66666C10 5.56209 9.10457 4.66666 8 4.66666C6.89543 4.66666 6 5.56209 6 6.66666C6 7.77123 6.89543 8.66666 8 8.66666Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.place }}</span>
+                </p>
+                {% if lesson.teacher != None %}
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.3334 14V12.6667C13.3334 11.9594 13.0524 11.2811 12.5523 10.781C12.0522 10.281 11.3739 10 10.6667 10H5.33335C4.62611 10 3.94783 10.281 3.44774 10.781C2.94764 11.2811 2.66669 11.9594 2.66669 12.6667V14" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.99998 7.33333C9.47274 7.33333 10.6666 6.13943 10.6666 4.66667C10.6666 3.19391 9.47274 2 7.99998 2C6.52722 2 5.33331 3.19391 5.33331 4.66667C5.33331 6.13943 6.52722 7.33333 7.99998 7.33333Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.teacher }}</span>
+                </p>
+                {% endif %}
+                <p class="lesson__stuff">
+                    {% if lesson.get_group_display == '23-ПМ-1' or lesson.get_group_display == '23-ПМ-2' %}
+                    <span class="lesson__group">{{ lesson.get_group_display }}</span>
+                        {% if lesson.get_subgroup_display != None %}
+                        / <span class="lesson__subgroup">{{ lesson.get_subgroup_display }}</span>
+                        {% else %}
+                        <span class="lesson__subgroup"></span>
+                        {% endif %}
+                    {% else %}
+                    <span class="lesson__group">23-ПМ</span>
+                    <span class="lesson__subgroup"></span>
+                    {% endif %}
+                    
+                    {% if lesson.get_week_type_display != None %}
+                    / {{ lesson.get_week_type_display }} неделя
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <!-- / end of tuesday -->
+
+    <div class="day lessons__day">
+        <div class="day__header">
+            <p>{{ dates.0.2 | date:"d.m, l" }}</p>
+        </div>
+        <!-- / end of header -->
+        {% for lesson in 23pm_odd %}
+            {% if lesson.lesson_date == 'WED' and lesson.week_type == 'Odd' %}
+            <div class="lesson day__lesson">
+                <h4 class="lesson__name">
+                    {{ lesson.name }}
+                    {% if lesson.get_lesson_type_display != None %}
+                    / {{ lesson.get_lesson_type_display }}
+                    {% endif %}
+                </h4>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.99998 14.6667C11.6819 14.6667 14.6666 11.6819 14.6666 8C14.6666 4.3181 11.6819 1.33334 7.99998 1.33334C4.31808 1.33334 1.33331 4.3181 1.33331 8C1.33331 11.6819 4.31808 14.6667 7.99998 14.6667Z" stroke="#0C429A" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 4V8L10.6667 9.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ lesson.time_start }} – {{ lesson.time_end }}</span>
+                </p>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 6.66667C14 11.3333 8 15.3333 8 15.3333C8 15.3333 2 11.3333 2 6.66667C2 5.07537 2.63214 3.54925 3.75736 2.42403C4.88258 1.29881 6.4087 0.666668 8 0.666668C9.5913 0.666668 11.1174 1.29881 12.2426 2.42403C13.3679 3.54925 14 5.07537 14 6.66667Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 8.66666C9.10457 8.66666 10 7.77123 10 6.66666C10 5.56209 9.10457 4.66666 8 4.66666C6.89543 4.66666 6 5.56209 6 6.66666C6 7.77123 6.89543 8.66666 8 8.66666Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.place }}</span>
+                </p>
+                {% if lesson.teacher != None %}
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.3334 14V12.6667C13.3334 11.9594 13.0524 11.2811 12.5523 10.781C12.0522 10.281 11.3739 10 10.6667 10H5.33335C4.62611 10 3.94783 10.281 3.44774 10.781C2.94764 11.2811 2.66669 11.9594 2.66669 12.6667V14" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.99998 7.33333C9.47274 7.33333 10.6666 6.13943 10.6666 4.66667C10.6666 3.19391 9.47274 2 7.99998 2C6.52722 2 5.33331 3.19391 5.33331 4.66667C5.33331 6.13943 6.52722 7.33333 7.99998 7.33333Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.teacher }}</span>
+                </p>
+                {% endif %}
+                <p class="lesson__stuff">
+                    {% if lesson.get_group_display == '23-ПМ-1' or lesson.get_group_display == '23-ПМ-2' %}
+                    <span class="lesson__group">{{ lesson.get_group_display }}</span>
+                        {% if lesson.get_subgroup_display != None %}
+                        / <span class="lesson__subgroup">{{ lesson.get_subgroup_display }}</span>
+                        {% else %}
+                        <span class="lesson__subgroup"></span>
+                        {% endif %}
+                    {% else %}
+                    <span class="lesson__group">23-ПМ</span>
+                    <span class="lesson__subgroup"></span>
+                    {% endif %}
+                    
+                    {% if lesson.get_week_type_display != None %}
+                    / {{ lesson.get_week_type_display }} неделя
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <!-- / end of wednesday -->
+
+    <div class="day lessons__day">
+        <div class="day__header">
+            <p>{{ dates.0.3 | date:"d.m, l" }}</p>
+        </div>
+        <!-- / end of header -->
+        {% for lesson in 23pm_odd %}
+            {% if lesson.lesson_date == 'THU' and lesson.week_type == 'Odd' %}
+            <div class="lesson day__lesson">
+                <h4 class="lesson__name">
+                    {{ lesson.name }}
+                    {% if lesson.get_lesson_type_display != None %}
+                    / {{ lesson.get_lesson_type_display }}
+                    {% endif %}
+                </h4>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.99998 14.6667C11.6819 14.6667 14.6666 11.6819 14.6666 8C14.6666 4.3181 11.6819 1.33334 7.99998 1.33334C4.31808 1.33334 1.33331 4.3181 1.33331 8C1.33331 11.6819 4.31808 14.6667 7.99998 14.6667Z" stroke="#0C429A" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 4V8L10.6667 9.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ lesson.time_start }} – {{ lesson.time_end }}</span>
+                </p>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 6.66667C14 11.3333 8 15.3333 8 15.3333C8 15.3333 2 11.3333 2 6.66667C2 5.07537 2.63214 3.54925 3.75736 2.42403C4.88258 1.29881 6.4087 0.666668 8 0.666668C9.5913 0.666668 11.1174 1.29881 12.2426 2.42403C13.3679 3.54925 14 5.07537 14 6.66667Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 8.66666C9.10457 8.66666 10 7.77123 10 6.66666C10 5.56209 9.10457 4.66666 8 4.66666C6.89543 4.66666 6 5.56209 6 6.66666C6 7.77123 6.89543 8.66666 8 8.66666Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.place }}</span>
+                </p>
+                {% if lesson.teacher != None %}
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.3334 14V12.6667C13.3334 11.9594 13.0524 11.2811 12.5523 10.781C12.0522 10.281 11.3739 10 10.6667 10H5.33335C4.62611 10 3.94783 10.281 3.44774 10.781C2.94764 11.2811 2.66669 11.9594 2.66669 12.6667V14" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.99998 7.33333C9.47274 7.33333 10.6666 6.13943 10.6666 4.66667C10.6666 3.19391 9.47274 2 7.99998 2C6.52722 2 5.33331 3.19391 5.33331 4.66667C5.33331 6.13943 6.52722 7.33333 7.99998 7.33333Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.teacher }}</span>
+                </p>
+                {% endif %}
+                <p class="lesson__stuff">
+                    {% if lesson.get_group_display == '23-ПМ-1' or lesson.get_group_display == '23-ПМ-2' %}
+                    <span class="lesson__group">{{ lesson.get_group_display }}</span>
+                        {% if lesson.get_subgroup_display != None %}
+                        / <span class="lesson__subgroup">{{ lesson.get_subgroup_display }}</span>
+                        {% else %}
+                        <span class="lesson__subgroup"></span>
+                        {% endif %}
+                    {% else %}
+                    <span class="lesson__group">23-ПМ</span>
+                    <span class="lesson__subgroup"></span>
+                    {% endif %}
+                    
+                    {% if lesson.get_week_type_display != None %}
+                    / {{ lesson.get_week_type_display }} неделя
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <!-- / end of thursday -->
+
+    <div class="day lessons__day">
+        <div class="day__header">
+            <p>{{ dates.0.4 | date:"d.m, l" }}</p>
+        </div>
+        <!-- / end of header -->
+        {% for lesson in 23pm_odd %}
+            {% if lesson.lesson_date == 'FRI' and lesson.week_type == 'Odd' %}
+            <div class="lesson day__lesson">
+                <h4 class="lesson__name">
+                    {{ lesson.name }}
+                    {% if lesson.get_lesson_type_display != None %}
+                    / {{ lesson.get_lesson_type_display }}
+                    {% endif %}
+                </h4>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.99998 14.6667C11.6819 14.6667 14.6666 11.6819 14.6666 8C14.6666 4.3181 11.6819 1.33334 7.99998 1.33334C4.31808 1.33334 1.33331 4.3181 1.33331 8C1.33331 11.6819 4.31808 14.6667 7.99998 14.6667Z" stroke="#0C429A" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 4V8L10.6667 9.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ lesson.time_start }} – {{ lesson.time_end }}</span>
+                </p>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 6.66667C14 11.3333 8 15.3333 8 15.3333C8 15.3333 2 11.3333 2 6.66667C2 5.07537 2.63214 3.54925 3.75736 2.42403C4.88258 1.29881 6.4087 0.666668 8 0.666668C9.5913 0.666668 11.1174 1.29881 12.2426 2.42403C13.3679 3.54925 14 5.07537 14 6.66667Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 8.66666C9.10457 8.66666 10 7.77123 10 6.66666C10 5.56209 9.10457 4.66666 8 4.66666C6.89543 4.66666 6 5.56209 6 6.66666C6 7.77123 6.89543 8.66666 8 8.66666Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.place }}</span>
+                </p>
+                {% if lesson.teacher != None %}
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.3334 14V12.6667C13.3334 11.9594 13.0524 11.2811 12.5523 10.781C12.0522 10.281 11.3739 10 10.6667 10H5.33335C4.62611 10 3.94783 10.281 3.44774 10.781C2.94764 11.2811 2.66669 11.9594 2.66669 12.6667V14" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.99998 7.33333C9.47274 7.33333 10.6666 6.13943 10.6666 4.66667C10.6666 3.19391 9.47274 2 7.99998 2C6.52722 2 5.33331 3.19391 5.33331 4.66667C5.33331 6.13943 6.52722 7.33333 7.99998 7.33333Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.teacher }}</span>
+                </p>
+                {% endif %}
+                <p class="lesson__stuff">
+                    {% if lesson.get_group_display == '23-ПМ-1' or lesson.get_group_display == '23-ПМ-2' %}
+                    <span class="lesson__group">{{ lesson.get_group_display }}</span>
+                        {% if lesson.get_subgroup_display != None %}
+                        / <span class="lesson__subgroup">{{ lesson.get_subgroup_display }}</span>
+                        {% else %}
+                        <span class="lesson__subgroup"></span>
+                        {% endif %}
+                    {% else %}
+                    <span class="lesson__group">23-ПМ</span>
+                    <span class="lesson__subgroup"></span>
+                    {% endif %}
+                    
+                    {% if lesson.get_week_type_display != None %}
+                    / {{ lesson.get_week_type_display }} неделя
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <!-- / end of friday -->
+
+    <div class="day lessons__day">
+        <div class="day__header">
+            <p>{{ dates.0.5 | date:"d.m, l" }}</p>
+        </div>
+        <!-- / end of header -->
+        {% for lesson in 23pm_odd %}
+            {% if lesson.lesson_date == 'SAT' and lesson.week_type == 'Odd' %}
+            <div class="lesson day__lesson">
+                <h4 class="lesson__name">
+                    {{ lesson.name }}
+                    {% if lesson.get_lesson_type_display != None %}
+                    / {{ lesson.get_lesson_type_display }}
+                    {% endif %}
+                </h4>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.99998 14.6667C11.6819 14.6667 14.6666 11.6819 14.6666 8C14.6666 4.3181 11.6819 1.33334 7.99998 1.33334C4.31808 1.33334 1.33331 4.3181 1.33331 8C1.33331 11.6819 4.31808 14.6667 7.99998 14.6667Z" stroke="#0C429A" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 4V8L10.6667 9.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ lesson.time_start }} – {{ lesson.time_end }}</span>
+                </p>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 6.66667C14 11.3333 8 15.3333 8 15.3333C8 15.3333 2 11.3333 2 6.66667C2 5.07537 2.63214 3.54925 3.75736 2.42403C4.88258 1.29881 6.4087 0.666668 8 0.666668C9.5913 0.666668 11.1174 1.29881 12.2426 2.42403C13.3679 3.54925 14 5.07537 14 6.66667Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 8.66666C9.10457 8.66666 10 7.77123 10 6.66666C10 5.56209 9.10457 4.66666 8 4.66666C6.89543 4.66666 6 5.56209 6 6.66666C6 7.77123 6.89543 8.66666 8 8.66666Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.place }}</span>
+                </p>
+                {% if lesson.teacher != None %}
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.3334 14V12.6667C13.3334 11.9594 13.0524 11.2811 12.5523 10.781C12.0522 10.281 11.3739 10 10.6667 10H5.33335C4.62611 10 3.94783 10.281 3.44774 10.781C2.94764 11.2811 2.66669 11.9594 2.66669 12.6667V14" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.99998 7.33333C9.47274 7.33333 10.6666 6.13943 10.6666 4.66667C10.6666 3.19391 9.47274 2 7.99998 2C6.52722 2 5.33331 3.19391 5.33331 4.66667C5.33331 6.13943 6.52722 7.33333 7.99998 7.33333Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.teacher }}</span>
+                </p>
+                {% endif %}
+                <p class="lesson__stuff">
+                    {% if lesson.get_group_display == '23-ПМ-1' or lesson.get_group_display == '23-ПМ-2' %}
+                    <span class="lesson__group">{{ lesson.get_group_display }}</span>
+                        {% if lesson.get_subgroup_display != None %}
+                        / <span class="lesson__subgroup">{{ lesson.get_subgroup_display }}</span>
+                        {% else %}
+                        <span class="lesson__subgroup"></span>
+                        {% endif %}
+                    {% else %}
+                    <span class="lesson__group">23-ПМ</span>
+                    <span class="lesson__subgroup"></span>
+                    {% endif %}
+                    
+                    {% if lesson.get_week_type_display != None %}
+                    / {{ lesson.get_week_type_display }} неделя
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <!-- / end of saturday -->
+
+</section>
+<!-- / end of odd lessons -->
+
+
+
+<section class="lessons _even _container">
+
+    <div class="day lessons__day">
+        <div class="day__header">
+            <p>{{ dates.1.0 | date:"d.m, l" }}</p>
+        </div>
+        <!-- / end of header -->
+        {% for lesson in 23pm_even %}
+            {% if lesson.lesson_date == 'MON' and lesson.week_type == 'Even' %}
+            <div class="lesson day__lesson">
+                <h4 class="lesson__name">
+                    {{ lesson.name }}
+                    {% if lesson.get_lesson_type_display != None %}
+                    / {{ lesson.get_lesson_type_display }}
+                    {% endif %}
+                </h4>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.99998 14.6667C11.6819 14.6667 14.6666 11.6819 14.6666 8C14.6666 4.3181 11.6819 1.33334 7.99998 1.33334C4.31808 1.33334 1.33331 4.3181 1.33331 8C1.33331 11.6819 4.31808 14.6667 7.99998 14.6667Z" stroke="#0C429A" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 4V8L10.6667 9.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ lesson.time_start }} – {{ lesson.time_end }}</span>
+                </p>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 6.66667C14 11.3333 8 15.3333 8 15.3333C8 15.3333 2 11.3333 2 6.66667C2 5.07537 2.63214 3.54925 3.75736 2.42403C4.88258 1.29881 6.4087 0.666668 8 0.666668C9.5913 0.666668 11.1174 1.29881 12.2426 2.42403C13.3679 3.54925 14 5.07537 14 6.66667Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 8.66666C9.10457 8.66666 10 7.77123 10 6.66666C10 5.56209 9.10457 4.66666 8 4.66666C6.89543 4.66666 6 5.56209 6 6.66666C6 7.77123 6.89543 8.66666 8 8.66666Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.place }}</span>
+                </p>
+                {% if lesson.teacher != None %}
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.3334 14V12.6667C13.3334 11.9594 13.0524 11.2811 12.5523 10.781C12.0522 10.281 11.3739 10 10.6667 10H5.33335C4.62611 10 3.94783 10.281 3.44774 10.781C2.94764 11.2811 2.66669 11.9594 2.66669 12.6667V14" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.99998 7.33333C9.47274 7.33333 10.6666 6.13943 10.6666 4.66667C10.6666 3.19391 9.47274 2 7.99998 2C6.52722 2 5.33331 3.19391 5.33331 4.66667C5.33331 6.13943 6.52722 7.33333 7.99998 7.33333Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.teacher }}</span>
+                </p>
+                {% endif %}
+                <p class="lesson__stuff">
+                    {% if lesson.get_group_display == '23-ПМ-1' or lesson.get_group_display == '23-ПМ-2' %}
+                    <span class="lesson__group">{{ lesson.get_group_display }}</span>
+                        {% if lesson.get_subgroup_display != None %}
+                        / <span class="lesson__subgroup">{{ lesson.get_subgroup_display }}</span>
+                        {% else %}
+                        <span class="lesson__subgroup"></span>
+                        {% endif %}
+                    {% else %}
+                    <span class="lesson__group">23-ПМ</span>
+                    <span class="lesson__subgroup"></span>
+                    {% endif %}
+                    
+                    {% if lesson.get_week_type_display != None %}
+                    / {{ lesson.get_week_type_display }} неделя
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <!-- / end of monday -->
+
+    <div class="day lessons__day">
+        <div class="day__header">
+            <p>{{ dates.1.1 | date:"d.m, l" }}</p>
+        </div>
+        <!-- / end of header -->
+        {% for lesson in 23pm_even %}
+            {% if lesson.lesson_date == 'TUE' and lesson.week_type == 'Even' %}
+            <div class="lesson day__lesson">
+                <h4 class="lesson__name">
+                    {{ lesson.name }}
+                    {% if lesson.get_lesson_type_display != None %}
+                    / {{ lesson.get_lesson_type_display }}
+                    {% endif %}
+                </h4>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.99998 14.6667C11.6819 14.6667 14.6666 11.6819 14.6666 8C14.6666 4.3181 11.6819 1.33334 7.99998 1.33334C4.31808 1.33334 1.33331 4.3181 1.33331 8C1.33331 11.6819 4.31808 14.6667 7.99998 14.6667Z" stroke="#0C429A" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 4V8L10.6667 9.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ lesson.time_start }} – {{ lesson.time_end }}</span>
+                </p>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 6.66667C14 11.3333 8 15.3333 8 15.3333C8 15.3333 2 11.3333 2 6.66667C2 5.07537 2.63214 3.54925 3.75736 2.42403C4.88258 1.29881 6.4087 0.666668 8 0.666668C9.5913 0.666668 11.1174 1.29881 12.2426 2.42403C13.3679 3.54925 14 5.07537 14 6.66667Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 8.66666C9.10457 8.66666 10 7.77123 10 6.66666C10 5.56209 9.10457 4.66666 8 4.66666C6.89543 4.66666 6 5.56209 6 6.66666C6 7.77123 6.89543 8.66666 8 8.66666Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.place }}</span>
+                </p>
+                {% if lesson.teacher != None %}
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.3334 14V12.6667C13.3334 11.9594 13.0524 11.2811 12.5523 10.781C12.0522 10.281 11.3739 10 10.6667 10H5.33335C4.62611 10 3.94783 10.281 3.44774 10.781C2.94764 11.2811 2.66669 11.9594 2.66669 12.6667V14" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.99998 7.33333C9.47274 7.33333 10.6666 6.13943 10.6666 4.66667C10.6666 3.19391 9.47274 2 7.99998 2C6.52722 2 5.33331 3.19391 5.33331 4.66667C5.33331 6.13943 6.52722 7.33333 7.99998 7.33333Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.teacher }}</span>
+                </p>
+                {% endif %}
+                <p class="lesson__stuff">
+                    {% if lesson.get_group_display == '23-ПМ-1' or lesson.get_group_display == '23-ПМ-2' %}
+                    <span class="lesson__group">{{ lesson.get_group_display }}</span>
+                        {% if lesson.get_subgroup_display != None %}
+                        / <span class="lesson__subgroup">{{ lesson.get_subgroup_display }}</span>
+                        {% else %}
+                        <span class="lesson__subgroup"></span>
+                        {% endif %}
+                    {% else %}
+                    <span class="lesson__group">23-ПМ</span>
+                    <span class="lesson__subgroup"></span>
+                    {% endif %}
+                    
+                    {% if lesson.get_week_type_display != None %}
+                    / {{ lesson.get_week_type_display }} неделя
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <!-- / end of tuesday -->
+
+    <div class="day lessons__day">
+        <div class="day__header">
+            <p>{{ dates.1.2 | date:"d.m, l" }}</p>
+        </div>
+        <!-- / end of header -->
+        {% for lesson in 23pm_even %}
+            {% if lesson.lesson_date == 'WED' and lesson.week_type == 'Even' %}
+            <div class="lesson day__lesson">
+                <h4 class="lesson__name">
+                    {{ lesson.name }}
+                    {% if lesson.get_lesson_type_display != None %}
+                    / {{ lesson.get_lesson_type_display }}
+                    {% endif %}
+                </h4>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.99998 14.6667C11.6819 14.6667 14.6666 11.6819 14.6666 8C14.6666 4.3181 11.6819 1.33334 7.99998 1.33334C4.31808 1.33334 1.33331 4.3181 1.33331 8C1.33331 11.6819 4.31808 14.6667 7.99998 14.6667Z" stroke="#0C429A" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 4V8L10.6667 9.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ lesson.time_start }} – {{ lesson.time_end }}</span>
+                </p>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 6.66667C14 11.3333 8 15.3333 8 15.3333C8 15.3333 2 11.3333 2 6.66667C2 5.07537 2.63214 3.54925 3.75736 2.42403C4.88258 1.29881 6.4087 0.666668 8 0.666668C9.5913 0.666668 11.1174 1.29881 12.2426 2.42403C13.3679 3.54925 14 5.07537 14 6.66667Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 8.66666C9.10457 8.66666 10 7.77123 10 6.66666C10 5.56209 9.10457 4.66666 8 4.66666C6.89543 4.66666 6 5.56209 6 6.66666C6 7.77123 6.89543 8.66666 8 8.66666Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.place }}</span>
+                </p>
+                {% if lesson.teacher != None %}
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.3334 14V12.6667C13.3334 11.9594 13.0524 11.2811 12.5523 10.781C12.0522 10.281 11.3739 10 10.6667 10H5.33335C4.62611 10 3.94783 10.281 3.44774 10.781C2.94764 11.2811 2.66669 11.9594 2.66669 12.6667V14" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.99998 7.33333C9.47274 7.33333 10.6666 6.13943 10.6666 4.66667C10.6666 3.19391 9.47274 2 7.99998 2C6.52722 2 5.33331 3.19391 5.33331 4.66667C5.33331 6.13943 6.52722 7.33333 7.99998 7.33333Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.teacher }}</span>
+                </p>
+                {% endif %}
+                <p class="lesson__stuff">
+                    {% if lesson.get_group_display == '23-ПМ-1' or lesson.get_group_display == '23-ПМ-2' %}
+                    <span class="lesson__group">{{ lesson.get_group_display }}</span>
+                        {% if lesson.get_subgroup_display != None %}
+                        / <span class="lesson__subgroup">{{ lesson.get_subgroup_display }}</span>
+                        {% else %}
+                        <span class="lesson__subgroup">test</span>
+                        {% endif %}
+                    {% else %}
+                    <span class="lesson__group">23-ПМ</span>
+                    <span class="lesson__subgroup"></span>
+                    {% endif %}
+                    
+                    {% if lesson.get_week_type_display != None %}
+                    / {{ lesson.get_week_type_display }} неделя
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <!-- / end of wednesday -->
+
+    <div class="day lessons__day">
+        <div class="day__header">
+            <p>{{ dates.1.3 | date:"d.m, l" }}</p>
+        </div>
+        <!-- / end of header -->
+        {% for lesson in 23pm_even %}
+            {% if lesson.lesson_date == 'THU' and lesson.week_type == 'Even' %}
+            <div class="lesson day__lesson">
+                <h4 class="lesson__name">
+                    {{ lesson.name }}
+                    {% if lesson.get_lesson_type_display != None %}
+                    / {{ lesson.get_lesson_type_display }}
+                    {% endif %}
+                </h4>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.99998 14.6667C11.6819 14.6667 14.6666 11.6819 14.6666 8C14.6666 4.3181 11.6819 1.33334 7.99998 1.33334C4.31808 1.33334 1.33331 4.3181 1.33331 8C1.33331 11.6819 4.31808 14.6667 7.99998 14.6667Z" stroke="#0C429A" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 4V8L10.6667 9.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ lesson.time_start }} – {{ lesson.time_end }}</span>
+                </p>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 6.66667C14 11.3333 8 15.3333 8 15.3333C8 15.3333 2 11.3333 2 6.66667C2 5.07537 2.63214 3.54925 3.75736 2.42403C4.88258 1.29881 6.4087 0.666668 8 0.666668C9.5913 0.666668 11.1174 1.29881 12.2426 2.42403C13.3679 3.54925 14 5.07537 14 6.66667Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 8.66666C9.10457 8.66666 10 7.77123 10 6.66666C10 5.56209 9.10457 4.66666 8 4.66666C6.89543 4.66666 6 5.56209 6 6.66666C6 7.77123 6.89543 8.66666 8 8.66666Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.place }}</span>
+                </p>
+                {% if lesson.teacher != None %}
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.3334 14V12.6667C13.3334 11.9594 13.0524 11.2811 12.5523 10.781C12.0522 10.281 11.3739 10 10.6667 10H5.33335C4.62611 10 3.94783 10.281 3.44774 10.781C2.94764 11.2811 2.66669 11.9594 2.66669 12.6667V14" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.99998 7.33333C9.47274 7.33333 10.6666 6.13943 10.6666 4.66667C10.6666 3.19391 9.47274 2 7.99998 2C6.52722 2 5.33331 3.19391 5.33331 4.66667C5.33331 6.13943 6.52722 7.33333 7.99998 7.33333Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.teacher }}</span>
+                </p>
+                {% endif %}
+                <p class="lesson__stuff">
+                    {% if lesson.get_group_display == '23-ПМ-1' or lesson.get_group_display == '23-ПМ-2' %}
+                    <span class="lesson__group">{{ lesson.get_group_display }}</span>
+                        {% if lesson.get_subgroup_display != None %}
+                        / <span class="lesson__subgroup">{{ lesson.get_subgroup_display }}</span>
+                        {% else %}
+                        <span class="lesson__subgroup"></span>
+                        {% endif %}
+                    {% else %}
+                    <span class="lesson__group">23-ПМ</span>
+                    <span class="lesson__subgroup"></span>
+                    {% endif %}
+                    
+                    {% if lesson.get_week_type_display != None %}
+                    / {{ lesson.get_week_type_display }} неделя
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <!-- / end of thursday -->
+
+    <div class="day lessons__day">
+        <div class="day__header">
+            <p>{{ dates.1.4 | date:"d.m, l" }}</p>
+        </div>
+        <!-- / end of header -->
+        {% for lesson in 23pm_even %}
+            {% if lesson.lesson_date == 'FRI' and lesson.week_type == 'Even' %}
+            <div class="lesson day__lesson">
+                <h4 class="lesson__name">
+                    {{ lesson.name }}
+                    {% if lesson.get_lesson_type_display != None %}
+                    / {{ lesson.get_lesson_type_display }}
+                    {% endif %}
+                </h4>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.99998 14.6667C11.6819 14.6667 14.6666 11.6819 14.6666 8C14.6666 4.3181 11.6819 1.33334 7.99998 1.33334C4.31808 1.33334 1.33331 4.3181 1.33331 8C1.33331 11.6819 4.31808 14.6667 7.99998 14.6667Z" stroke="#0C429A" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 4V8L10.6667 9.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ lesson.time_start }} – {{ lesson.time_end }}</span>
+                </p>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 6.66667C14 11.3333 8 15.3333 8 15.3333C8 15.3333 2 11.3333 2 6.66667C2 5.07537 2.63214 3.54925 3.75736 2.42403C4.88258 1.29881 6.4087 0.666668 8 0.666668C9.5913 0.666668 11.1174 1.29881 12.2426 2.42403C13.3679 3.54925 14 5.07537 14 6.66667Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 8.66666C9.10457 8.66666 10 7.77123 10 6.66666C10 5.56209 9.10457 4.66666 8 4.66666C6.89543 4.66666 6 5.56209 6 6.66666C6 7.77123 6.89543 8.66666 8 8.66666Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.place }}</span>
+                </p>
+                {% if lesson.teacher != None %}
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.3334 14V12.6667C13.3334 11.9594 13.0524 11.2811 12.5523 10.781C12.0522 10.281 11.3739 10 10.6667 10H5.33335C4.62611 10 3.94783 10.281 3.44774 10.781C2.94764 11.2811 2.66669 11.9594 2.66669 12.6667V14" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.99998 7.33333C9.47274 7.33333 10.6666 6.13943 10.6666 4.66667C10.6666 3.19391 9.47274 2 7.99998 2C6.52722 2 5.33331 3.19391 5.33331 4.66667C5.33331 6.13943 6.52722 7.33333 7.99998 7.33333Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.teacher }}</span>
+                </p>
+                {% endif %}
+                <p class="lesson__stuff">
+                    {% if lesson.get_group_display == '23-ПМ-1' or lesson.get_group_display == '23-ПМ-2' %}
+                    <span class="lesson__group">{{ lesson.get_group_display }}</span>
+                        {% if lesson.get_subgroup_display != None %}
+                        / <span class="lesson__subgroup">{{ lesson.get_subgroup_display }}</span>
+                        {% else %}
+                        <span class="lesson__subgroup"></span>
+                        {% endif %}
+                    {% else %}
+                    <span class="lesson__group">23-ПМ</span>
+                    <span class="lesson__subgroup"></span>
+                    {% endif %}
+                    
+                    {% if lesson.get_week_type_display != None %}
+                    / {{ lesson.get_week_type_display }} неделя
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <!-- / end of friday -->
+
+    <div class="day lessons__day">
+        <div class="day__header">
+            <p>{{ dates.1.5 | date:"d.m, l" }}</p>
+        </div>
+        <!-- / end of header -->
+        {% for lesson in 23pm_even %}
+            {% if lesson.lesson_date == 'SAT' and lesson.week_type == 'Even' %}
+            <div class="lesson day__lesson">
+                <h4 class="lesson__name">
+                    {{ lesson.name }}
+                    {% if lesson.get_lesson_type_display != None %}
+                    / {{ lesson.get_lesson_type_display }}
+                    {% endif %}
+                </h4>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.99998 14.6667C11.6819 14.6667 14.6666 11.6819 14.6666 8C14.6666 4.3181 11.6819 1.33334 7.99998 1.33334C4.31808 1.33334 1.33331 4.3181 1.33331 8C1.33331 11.6819 4.31808 14.6667 7.99998 14.6667Z" stroke="#0C429A" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 4V8L10.6667 9.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ lesson.time_start }} – {{ lesson.time_end }}</span>
+                </p>
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 6.66667C14 11.3333 8 15.3333 8 15.3333C8 15.3333 2 11.3333 2 6.66667C2 5.07537 2.63214 3.54925 3.75736 2.42403C4.88258 1.29881 6.4087 0.666668 8 0.666668C9.5913 0.666668 11.1174 1.29881 12.2426 2.42403C13.3679 3.54925 14 5.07537 14 6.66667Z" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 8.66666C9.10457 8.66666 10 7.77123 10 6.66666C10 5.56209 9.10457 4.66666 8 4.66666C6.89543 4.66666 6 5.56209 6 6.66666C6 7.77123 6.89543 8.66666 8 8.66666Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.place }}</span>
+                </p>
+                {% if lesson.teacher != None %}
+                <p class="lesson__info">
+                    <svg class="lesson__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.3334 14V12.6667C13.3334 11.9594 13.0524 11.2811 12.5523 10.781C12.0522 10.281 11.3739 10 10.6667 10H5.33335C4.62611 10 3.94783 10.281 3.44774 10.781C2.94764 11.2811 2.66669 11.9594 2.66669 12.6667V14" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.99998 7.33333C9.47274 7.33333 10.6666 6.13943 10.6666 4.66667C10.6666 3.19391 9.47274 2 7.99998 2C6.52722 2 5.33331 3.19391 5.33331 4.66667C5.33331 6.13943 6.52722 7.33333 7.99998 7.33333Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <span>{{ lesson.teacher }}</span>
+                </p>
+                {% endif %}
+                <p class="lesson__stuff">
+                    {% if lesson.get_group_display == '23-ПМ-1' or lesson.get_group_display == '23-ПМ-2' %}
+                    <span class="lesson__group">{{ lesson.get_group_display }}</span>
+                        {% if lesson.get_subgroup_display != None %}
+                        / <span class="lesson__subgroup">{{ lesson.get_subgroup_display }}</span>
+                        {% else %}
+                        <span class="lesson__subgroup"></span>
+                        {% endif %}
+                    {% else %}
+                    <span class="lesson__group">23-ПМ</span>
+                    <span class="lesson__subgroup"></span>
+                    {% endif %}
+                    
+                    {% if lesson.get_week_type_display != None %}
+                    / {{ lesson.get_week_type_display }} неделя
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <!-- / end of saturday -->
+
+</section>
+<!-- / end of even lessons -->
+{% endblock %}
+
+
+{% block page_scripts %}
+<script type="text/javascript">
+// Setup view filters from hide
+let filters = document.getElementsByClassName('filters')[0],
+    filters_btn = document.getElementById('ft'),
+    filters_item = document.getElementsByClassName('filters__item');
+
+filters_btn.addEventListener('click', () => {
+    for (i=0; i < filters_item.length; i++) {
+        filters_item[i].classList.toggle('_hidden');
+    }
+});
+
+// Setup week view
+let left_arrow = document.getElementsByClassName('week__left-arrow')[0],
+    right_arrow = document.getElementsByClassName('week__right-arrow')[0],
+    week_names = document.getElementsByClassName('week__name'),
+    odd_week = document.getElementsByClassName('_odd')[0],
+    even_week = document.getElementsByClassName('_even')[0];
+
+// Define current week
+let current_week = document.getElementsByClassName('add-info__curr-week')[0];
+current_week = Number(current_week.innerHTML);
+if (current_week % 2 == 0) {
+    odd_week.classList.add('_hidden');
+} else {
+    even_week.classList.add('_hidden');
+}
+
+// Setup week switching
+let change_week = (weeks) => {
+    for (i=0; i < week_names.length; i++) {
+        week_names[i].classList.toggle('_hidden');
+    }
+    odd_week.classList.toggle('_hidden');
+    even_week.classList.toggle('_hidden');
+}
+
+left_arrow.addEventListener('click', () => {
+    left_arrow.classList.add('_hidden');
+    right_arrow.classList.remove('_hidden');
+    change_week(week_names);
+});
+
+right_arrow.addEventListener('click', () => {
+    left_arrow.classList.remove('_hidden');
+    right_arrow.classList.add('_hidden');
+    change_week(week_names);
+});
+
+
+// Selected filters (data)
+let ft_groups = document.getElementsByClassName('ft-group__opt');
+let filters_list = {
+    'group': '23-ПМ-1',
+    'subgroup': 'Подгруппа 1',
+    'eng_subgroup': 'Подгруппа 1, англ',
+}
+
+// Change class of filter
+let change_active = (data) => {
+    if (data == '23-ПМ-1') {
+        ft_groups[0].classList.add('_active');
+        ft_groups[1].classList.remove('_active');
+    } else if (data == '23-ПМ-2') {
+        ft_groups[1].classList.add('_active');
+        ft_groups[0].classList.remove('_active');
+    } else if (data == 'Подгруппа 1') {
+        ft_groups[2].classList.add('_active');
+        ft_groups[3].classList.remove('_active');
+    } else if (data == 'Подгруппа 2') {
+        ft_groups[3].classList.add('_active');
+        ft_groups[2].classList.remove('_active');
+    } else if (data == 'Подгруппа 1, англ') {
+        ft_groups[4].classList.add('_active');
+        ft_groups[5].classList.remove('_active');
+    } else {
+        ft_groups[5].classList.add('_active');
+        ft_groups[4].classList.remove('_active');
+    }
+};
+
+// Find lessons by group and subgroup
+let find_lessons = (data) => {
+    if (data == '23-ПМ-1' || data == '23-ПМ-2') {
+        filters_list['group'] = data;
+    } else if (data == 'Подгруппа 1, англ' || data == 'Подгруппа 2, англ') {
+        filters_list['eng_subgroup'] = data;
+    } else {
+        filters_list['subgroup'] = data;
+    }
+    change_active(data);
+    view_lesson(filters_list);
+};
+
+// Get lessons by group and subgroup, other hide
+let lessons = document.getElementsByClassName('lesson');
+
+let view_lesson = (filters_list) => {
+    for (i=0; i < lessons.length; i++) {
+        check_1 = lessons[i].getElementsByClassName('lesson__group')[0].innerHTML;
+        check_2 = lessons[i].getElementsByClassName('lesson__subgroup')[0].innerHTML;
+        if ((check_1 == filters_list['group'] || check_1 == '23-ПМ') &&
+        ((check_2 == filters_list['subgroup'] || check_2 == '') ||
+        (check_2 == filters_list['eng_subgroup']))) {
+            lessons[i].classList.remove('_hidden');
+        } else {
+            lessons[i].classList.add('_hidden');
+        }
+    }
+};
+view_lesson(filters_list);
+
+// Setup search only by group
+let ft_group = (data) => {
+    for (i=0; i < lessons.length; i++) {
+        check = lessons[i].getElementsByClassName('lesson__group')[0].innerHTML;
+        if (check == data) {
+            lessons[i].classList.remove('_hidden');
+        } else {
+            lessons[i].classList.add('_hidden');
+        }
+    }
+};
+
+// Setup search only by subgroup
+let ft_subgroup = (data) => {
+    for (i=0; i < lessons.length; i++) {
+        check = lessons[i].getElementsByClassName('lesson__subgroup')[0].innerHTML;
+        if (check == data) {
+            lessons[i].classList.remove('_hidden');
+        } else {
+            lessons[i].classList.add('_hidden');
+        }
+    }
+};
+</script>
+{% endblock %}

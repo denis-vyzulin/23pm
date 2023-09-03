@@ -1,0 +1,15 @@
+@import 'core/variables';
+@import 'core/mixins';
+@import 'core/normalize';
+@import 'core/typography';
+
+._container {
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+@import 'components/header';
+@import 'components/lessons';
+@import 'components/filters';
+
+@import 'elements/tech';

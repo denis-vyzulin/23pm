@@ -1,0 +1,53 @@
+// ==> Headings
+h1, h2, h3,
+h4, h5 {
+    color: var(--heading-color);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+}
+
+h1 {
+    @include adaptive_font_size(48, 24);
+}
+h2 {
+    @include adaptive_font_size(36, 20);
+}
+h3 {
+    @include adaptive_font_size(28, 18);
+}
+h4 {
+    @include adaptive_font_size(24, 15);
+}
+h5 {
+    @include adaptive_font_size(18, 13);
+}
+
+
+// ==> Parent text elements
+p,
+li,
+th,
+td,
+button,
+form,
+input,
+textarea,
+blockquote {
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif;
+    @include adaptive_font_size(16, 13);
+}
+
+// ==> Child text elements
+a,
+i,
+b,
+q,
+em,
+mark,
+strong {
+    color: inherit;
+    font: inherit;
+    font-family: 'Inter', sans-serif;
+    line-height: inherit;
+}
